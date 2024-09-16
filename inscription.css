@@ -101,8 +101,7 @@ a{
   left: 30px;
 }
   
-  /* Style for the form error messages */
-  input:invalid {
-    border: 1px solid red;
-  }
+input:invalid {
+  border: 1px solid red;
+}
   

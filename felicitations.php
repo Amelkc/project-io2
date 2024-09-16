@@ -1,7 +1,6 @@
 <?php 
   function felicitations($modif){
    $message = $modif ? "Modifications enregistrées !" : "Merci pour votre inscription !";
-   $mot = $modif ? "Modification" : "Inscription !";
    $html = "
     <h2>".$message."<h2>
     <br>

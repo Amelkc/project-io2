@@ -7,7 +7,7 @@
         <label for=\"post_title\">Titre:</label>
         <input type=\"text\" name=\"post_title\" required><br>
         
-        <label for=\"post_contenu\">Contenu:</label>
+        <label for=\"post_contenu\">Contenu:</label><br>
         <textarea name=\"post_contenu\" rows=\"5\" required></textarea><br>
         
         <label for=\"post_picture\">Image:</label>
@@ -51,7 +51,7 @@
        
     }   
 
-    function delet($id){//j'ai enlevé le html pour la suprression parce que cv poser probleme
+    function delet($id){//pour supprimer le post il faut avant supprimer tous les likes associer car il y a une clé étrangère
 	    $db = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
 
         $stmt2 = $db->prepare("DELETE FROM Likes WHERE post_id = ?");

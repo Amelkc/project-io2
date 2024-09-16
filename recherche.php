@@ -3,14 +3,13 @@
     
 
         $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
-		//$stmt = $pdo->prepare('SELECT user_pseudo, user_id FROM `Users` ORDER BY user_id DESC'); 
 		if(isset($user)&&!empty($user)){
 			$stmt = $pdo->prepare('SELECT user_pseudo, user_id 
-						FROM `Users` 
+						FROM Users 
 						WHERE user_pseudo 
 						LIKE ? 
 						ORDER BY user_id DESC'); 
-			$stmt->execute(array('%' . $user . '%'));
+			$stmt->execute(array('%' . $user . '%'));//pour ne pas se limiter si on ne connait pas le pseud entier
 			$utilisateurs = $stmt->fetchAll();
 		}
            
@@ -23,12 +22,16 @@
 			$html.= "</main><br>
 			<aside><form action=\"index.php?action=search\" method=\"post\"><label for=\"recherche\">Modifier ma recherche :</label><input type=\"search\" name=\"q\" placeholder=\"Rechercher\">
 			<div class=\"valider\"><button type=\"submit\" >Ok !</button></div>
-			</form><div class=\"retour\"><a href = \"index.php\">Retour à l'accueil</a></div></aside>";
+			</form>
+			<div class=\"retour\"><a href = \"index.php\">Retour à l'accueil</a>
+			</div></aside>";
         } else{
            $html.= "<h3> Aucun utilisateur trouvé</h3></main>
 			<aside><form action=\"index.php?action=search\" method=\"post\"><label for=\"recherche\">Modifier ma recherche :</label><input type=\"search\" name=\"q\" placeholder=\"Rechercher\">
 			<div class=\"valider\"><button type=\"submit\">Ok !</button></div>
-			</form><div class=\"retour\"><a href = \"index.php\">Retour à l'accueil</a></div></aside>";
+			</form>
+			<div class=\"retour\"><a href = \"index.php\">Retour à l'accueil</a>
+			</div></aside>";
         }
        return $html;
     }

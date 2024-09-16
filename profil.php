@@ -2,12 +2,12 @@
  include_once('traitementLikes.php');
  include_once('accueil.php');
 
-  function count_Followers($id){
-    $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
-    $followers = $pdo->prepare('SELECT count(*) FROM Followers WHERE user_id = ?');
-    $followers->execute(array($id));
-    $num = $followers->fetchColumn();
-    return (string) $num;
+function count_Followers($id){
+  $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
+  $followers = $pdo->prepare('SELECT count(*) FROM Followers WHERE user_id = ?');
+  $followers->execute(array($id));
+  $num = $followers->fetchColumn();
+  return (string) $num;
 }
 
 function count_Followings($id){
@@ -47,7 +47,6 @@ function count_Followings($id){
     $isAdmin = $result !== false ? $result['user_admin'] : false;
 
 
-    // ... peut etre recuperer d'autres infos selon nos preferences a voir +tard
     $affichageH2 ="&commat;"; //'@'
     if($id != $_SESSION['LOGGED_ID']){
 	    $affichageH2 .= $pseudo_profil;
@@ -72,9 +71,11 @@ function count_Followings($id){
 	  
     if($id != $_SESSION['LOGGED_ID']){
       if(is_Logged_User_Subscribed($id)){
-        $html .= "<div class=\"actions\"><button type=\"button\"><a href=\"index.php?action=unfollow&amp;id=".$id."\">Se désabonner</a></button></div></div>";
+        $html .= "<div class=\"actions\"><button type=\"button\"><a href=\"index.php?action=unfollow&amp;id=".$id."\">Se désabonner</a></button>
+        </div></div>";
       }else{
-        $html .= "<div class=\"actions\"><button type=\"button\"><a href=\"index.php?action=subscribe&amp;id=".$id."\">Suivre</a></button></div></div>";
+        $html .= "<div class=\"actions\"><button type=\"button\"><a href=\"index.php?action=subscribe&amp;id=".$id."\">Suivre</a></button>
+        </div></div>";
       }
     }else{
       $html .=  "<div class=\"actions\"><button type=\"button\"><a href=\"index.php?action=modifier\">Modifier mes infos</a></button>
@@ -82,7 +83,7 @@ function count_Followings($id){
     }
 
     // afficher les posts du profil
-	  $html.="<h3 class=\"publications\">&nbsp;&nbsp;Publications:</h3><div class=\"post\">";
+	  $html.="<h3 class=\"publications\">&nbsp;&nbsp;Publications:</h3>";
 		$stmt = $pdo->prepare('SELECT Posts.post_title, Posts.post_contenu, Posts.post_picture, Posts.post_id, Users.user_pseudo, Users.user_id 
                   FROM Posts 
                   INNER JOIN Users 
@@ -98,10 +99,14 @@ function count_Followings($id){
       $html .= "<p>il n'y a aucun poste à afficher pour le moment ! </p>";
     }
     foreach ($posts as $post) {
-      $html .= "<article><div class=\"publication-horsphoto\"><h3 class=\"titre\">" . htmlspecialchars($post['post_title']) . "</h3>" ;
-      html .=  "<p>".htmlspecialchars($post['post_contenu'])."</p></div>"; 
+      $html .= "<div class=\"post\"><article>
+      <div class=\"publication-horsphoto\"><h3 class=\"titre\">" . htmlspecialchars($post['post_title']) . "</h3>" ;
+      $html .=  "<p>".htmlspecialchars($post['post_contenu'])."</p>
+      </div>"; 
       if($post['post_picture']!== null){
-        $html .= "<img src=\"data:image/jpeg;base64," . base64_encode($post['post_picture']). "\" alt=\"Post Picture\" id=\"pic\" width=\"50\" height=\"50\" ><br>";
+        $html .= "<div class=\"publication-photo\">
+        <img src=\"data:image/jpeg;base64," . base64_encode($post['post_picture']). "\" alt=\"Post Picture\" id=\"pic\" width=\"50\" height=\"50\" >
+        <br></div>";
       }
       $html.="</article>";
       $mot = countPostLikes($post['post_id']) > 1 ? " likes" : " like";
@@ -133,17 +138,22 @@ function count_Followings($id){
 
       }
       if(isAdmin($_SESSION['LOGGED_ID']) || $id == $_SESSION['LOGGED_ID']){
-        $html.="<div class=\"supp\"><button type=\"button\"><a href=\"index.php?action=delete&amp;id=".$post['post_id']."\">Supprimer la publication</a></button></div>"; 
+        $html.="<div class=\"supp\"><button type=\"button\"><a href=\"index.php?action=delete&amp;id=".$post['post_id']."\">Supprimer la publication</a></button>
+        </div>"; 
       } 
+
+      $html .= "</div><br>";
 		}
 
-	  $html .= "</div></main><aside><div class=\"recherche\"><form action=\"index.php?action=search\" method=\"post\"><input type=\"search\" name=\"q\" placeholder=\"Rechercher\">
+	  $html .= "</main><aside>
+    <div class=\"recherche\"><form action=\"index.php?action=search\" method=\"post\"><input type=\"search\" name=\"q\" placeholder=\"Rechercher\">
   	<button type=\"submit\">Ok !</button></form></div> 
     <div class=\"redirect\">
-		 <button type=\"button\"><a href=\"index.php?action=publier\">Publier</a></button><button type=\"button\"><a href=\"index.php?action=accueil\"><i class=\"fa-solid fa-house\" style=\"color: #666100;\"></i></a></button>";
+		<button type=\"button\"><a href=\"index.php?action=publier\">Publier</a></button>
+    <button type=\"button\"><a href=\"index.php?action=accueil\"><i class=\"fa-solid fa-house\" style=\"color: #666100;\"></i></a></button>";
     if($id != $_SESSION['LOGGED_ID']){ $html.="<button type=\"button\"><a href=\"index.php?action=profil&amp;id=".$_SESSION['LOGGED_ID']."\">MonCompte</a></button>";}
     
-    $html.="</div></aside>";
+    $html.="</aside>";
     return $html;
   }
 
@@ -151,7 +161,7 @@ function count_Followings($id){
       if(isset($_SESSION['LOGGED_MDP']) && isset($_SESSION['LOGGED_PSEUDO'])) {
         $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
     
-        // verifie que le user a follow existe (je pense pas que c'est obligatoire mais bon)
+        // verifie que le user a follow existe
         $stmt = $pdo->prepare('SELECT * FROM Users WHERE user_id = ?');
         $stmt->execute([$id]);
         $user = $stmt->fetch();
@@ -197,8 +207,8 @@ function count_Followings($id){
       $stmt->execute(array($user));
       $users = $stmt->fetchAll();
       
-      $html = "<h2>Abonnés</h2>";
-      if(count($users) > 0) {
+      $html = "<h2>Abonnés :</h2><br>";
+      if(count($users) > 0) {//si il y des followers
         foreach($users as $user) {
           $html .= "<li><i class=\"fa-solid fa-user\" style=\"color: #ada368;\"></i><a href=\"index.php?action=profil&amp;id=" .$user['user_id']."\">" . $user['user_pseudo'] . "</a></li>";
         }
@@ -220,8 +230,8 @@ function count_Followings($id){
       $stmt->execute(array($user));
       $users = $stmt->fetchAll();
       
-      $html = "<h2>Abonnements :</h2>";
-      if(count($users) > 0) {
+      $html = "<h2>Abonnements :</h2><br>";
+      if(count($users) > 0) {//si il y a des followings
         foreach($users as $user) {
             $html .= "<li><i class=\"fa-solid fa-user\" style=\"color: #ada368;\"></i><a href=\"index.php?action=profil&amp;id=" .$user['user_id']."\">" . $user['user_pseudo'] . "</a></li>";
         }
@@ -235,15 +245,15 @@ function count_Followings($id){
   
       
 
-    function unFollow($id){
+    function unFollow($id){//il faut supprimer le followers et le followings
       if(isset($_SESSION['LOGGED_MDP']) && isset($_SESSION['LOGGED_PSEUDO'])){
         $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
 
-        $stmt = $pdo->prepare("DELETE FROM Followings WHERE user_id = :logged_id AND following_id = :id");
-        $stmt->execute(array(':logged_id' => $_SESSION['LOGGED_ID'], ':id' => $id));
+        $stmt = $pdo->prepare("DELETE FROM Followings WHERE user_id = ? AND following_id = ?");
+        $stmt->execute(array($_SESSION['LOGGED_ID'], $id));
 
-        $stmt = $pdo->prepare("DELETE FROM Followers WHERE user_id = :id AND followers_id = :logged_id");
-        $stmt->execute(array(':logged_id' => $_SESSION['LOGGED_ID'], ':id' => $id));
+        $stmt = $pdo->prepare("DELETE FROM Followers WHERE user_id = ? AND followers_id = ?");
+        $stmt->execute(array($id,$_SESSION['LOGGED_ID']));
       }
     }
     

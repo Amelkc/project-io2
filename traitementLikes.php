@@ -30,7 +30,7 @@ function countPostLikes($post_id) {
   return $stmt->fetchColumn();
 }
 
-  function getUsersWhoLikedPost($postId) {
+  function getUsersWhoLikedPost($postId) {//recupérer les users qui ont like un post donné
     $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
     $stmt = $pdo->prepare('SELECT Users.user_pseudo, Users.user_id 
                   FROM Likes 
@@ -40,7 +40,7 @@ function countPostLikes($post_id) {
     $stmt->execute(array($postId));
     $users = $stmt->fetchAll();
     
-    $html = "<h2>Les personnes qui ont aimé ce post</h2>";
+    $html = "<h2>Les personnes qui ont aimé ce post</h2><br>";
     if(count($users) > 0) {
       foreach($users as $user) {
           $html .= "<li><i class=\"fa-solid fa-user\" style=\"color: #ada368;\"></i><a href=\"index.php?action=profil&amp;id=" .$user['user_id']."\">" . $user['user_pseudo'] . "</a></li>";

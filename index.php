@@ -1,4 +1,5 @@
 <?php
+    //le code de base, en majorité tout passe par ici pour aller sur d'autre pages
     session_start();
     include_once('inscription.php');
     include_once('bienvenue.php');
@@ -9,10 +10,10 @@
     include_once('publier.php');
     include_once('recherche.php');
 	
-    $title = "InstaPets"; //par defaut on sait jamais
-    $style = "defaut.css"; //a creer
+    $title = "InstaPets"; //par defaut
+    $style = "defaut.css";
 
-   if(!isset($_SESSION['LOGGED_MDP'])){
+    if(!isset($_SESSION['LOGGED_MDP'])){
         if(isset($_GET['action'])){
             switch($_GET['action']){
                 case 'bienvenue' :

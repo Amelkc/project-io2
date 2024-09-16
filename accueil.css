@@ -1,5 +1,7 @@
 body{
   background-color: #a89d71;
+  padding: 10px;
+  padding-bottom: 60px;
 }
   
 
@@ -8,12 +10,14 @@ footer {
   left: 0;
   bottom: 0;
   width: 100%;
+  height: 60px;
   color: #361607;
   text-align: center;
   font-weight: bolder; 
   opacity: 0.8;
   background-image: url("https://i.pinimg.com/564x/bc/81/8d/bc818d55cf4b7d62c245743b76aee349.jpg");
   font-family:  sans-serif;
+  padding: 10px;
 }
 
 h1{
@@ -116,8 +120,8 @@ a{
 }
 article{
   position: relative;
-  height: 0;
-  padding-bottom: 100%;
+  box-sizing: border-box;
+  width: 220px;
 }
 
 .publication-horsphoto{
@@ -125,8 +129,8 @@ article{
   font-size: 16px;
   font-weight: bold;
   margin-right: 50px;
-  margin-top : -40px;
-  width : 60%;
+  margin-top : -25px;
+  width : 100%;
   color : white;
   z-index: 1;
 }
@@ -135,13 +139,19 @@ article{
   margin-bottom : 40px;
 }
 
-
 #pic{
-  position: absolute;
-  top: 115px;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.publication-photo{
+  position: relative;
+  top: 0px;
   left: 0;
-  width: 50%;
-  height: 50%;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
 }
 

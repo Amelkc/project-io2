@@ -1,5 +1,5 @@
 <?php
-    function print_Login(){
+    function print_Login(){//affiche le formulaire pour se connecter
         $html = "
         <main>
         <h2>Connexion :</h2>
@@ -21,8 +21,8 @@
         // Validation du formulaire
         if (isset($_POST['login']) &&  isset($_POST['mdp'])) {
             $login = htmlspecialchars($_POST['login']);
-            $mdp = sha1($_POST['mdp']);//decrypter le mdp
-            $stmt = $pdo->prepare('SELECT * FROM `Users`');
+            $mdp = sha1($_POST['mdp']);//crypter le mdp
+            $stmt = $pdo->prepare('SELECT * FROM Users');
             $stmt->execute();
             $user = $stmt->fetchAll();
     

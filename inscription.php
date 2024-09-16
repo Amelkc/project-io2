@@ -1,9 +1,7 @@
 <?php
-function print_form($modifier) {
+function print_form($modifier) {//formulaire d'inscription ou de modification
   $mot = $modifier ? "Modifier mes informations" : "S'inscrire";
   $destination = $modifier ? "update" : "sauvegarder";
-  //$valDate = strlen($date) > 0 ? '$date' : 'jj/mm/aaaa';
-  // AJOUT PHOTO DE PROFIL ???? vrmnt si on a le temps
 
   $html =
     "<main><h2>$mot</h2>
@@ -16,6 +14,7 @@ function print_form($modifier) {
     }else{
         $html .= "placeholder=\"Votre pseudo\">";
     }
+
     $html.= "<br>
     <label for=\"nom\">Nom :</label>
     <input type=\"text\" id=\"nom\" required=\"required\" name=\"nom\"";
@@ -24,6 +23,7 @@ function print_form($modifier) {
     }else{
         $html .= "placeholder=\"Votre nom\">";
     }
+
     $html.= "<br>
     <label for=\"prenom\">Prenom :</label>
     <input type=\"text\" id=\"prenom\"  required=\"required\" name=\"prenom\"";
@@ -32,6 +32,7 @@ function print_form($modifier) {
     }else{
         $html .= "placeholder=\"Votre prénom\">";
     }
+
     $html.="<br>
     <label for=\"date\">Date de naissance :</label>
     <input type=\"date\" id=\"date\" required=\"required\" name=\"date\"";
@@ -40,6 +41,7 @@ function print_form($modifier) {
     } else{
         $html .= ">";
     }
+
     $html .="<br>
     <label for=\"mail\">Adresse mail : </label>
     <input type=\"email\" id =\"mail\" name=\"mail\" required=\"required\" pattern=\"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}\"";
@@ -48,13 +50,15 @@ function print_form($modifier) {
     }else{
         $html .= "placeholder=\"ex: toto@mail.com\">";
     }
+
     $html.="<br>
     <label for=\"mdp\">Mot de passe : </label>
     <input type=\"password\" name=\"mdp\" placeholder=\"mot de passe\">
     <br>
-    <button type=\"submit\">".$mot."</button>
+    <button type=\"submit\">".$mot."</button><br>
     </form></main>";
-  if(!$modifier){$html.="<dic class=\"connexion\"><a href=\"index.php?action=connexion\"><i class=\"fa-solid fa-user\" style=\"color: #553d00;\"></i>J'ai déjà un compte</a></div>";}
+    if(!$modifier){$html.="<dic class=\"connexion\"><a href=\"index.php?action=connexion\"><i class=\"fa-solid fa-user\" style=\"color: #553d00;\"></i>J'ai déjà un compte</a></div>";}
+    
     return $html;
 }
 
@@ -62,7 +66,7 @@ function inscriptionValidee(){
         $pdo = new PDO('mysql:host=localhost;dbname=instapets', 'root', 'root');
     
         if(isset($_POST['Pseudo'])){
-            $stmt = $pdo -> prepare('SELECT user_pseudo FROM `Users`');
+            $stmt = $pdo -> prepare('SELECT user_pseudo FROM Users');
             $stmt -> execute();
             $users = $stmt -> fetchAll();
             foreach($users as $pseudo){
@@ -88,7 +92,7 @@ function inscriptionValidee(){
         } else return false;
         
         if(isset($_POST['mail'])){
-            $stmt = $pdo->prepare('SELECT user_email FROM `Users`');
+            $stmt = $pdo->prepare('SELECT user_email FROM Users');
             $stmt->execute();
             $users = $stmt->fetchAll();
             foreach($users as $mail){
@@ -131,7 +135,7 @@ function inscriptionValidee(){
       
 }
 
-/*cas de la modification des infos: recuperer l'utilisateur, valider ses nouvelles infos mais faire attention à la verification des infos*/
+/*cas de la modification des infos: recuperer l'utilisateur, valider ses nouvelles infos*/
 
 function modificationValidee(){
 
@@ -152,7 +156,7 @@ function modificationValidee(){
         "oldMdp" =>   $_SESSION['LOGGED_MDP'] ,
         "oldPrenom" =>  $_SESSION['LOGGED_PRENOM'], 
         "oldNom" => $_SESSION['LOGGED_NOM'],
-        "oldDate" => $_SESSION['LOGGED_DATE']// faire attention au format recuperer
+        "oldDate" => $_SESSION['LOGGED_DATE']
     );
 
     // recuperer les données du formulaire ->htmlspecialchars ; sha1(); 
@@ -172,7 +176,7 @@ function modificationValidee(){
     // si nouveau pseudo/mail verifier qu'il n'est pas dans la base de données avant de modifer
 
     if($oldInfo['oldMail'] != $newInfo['newMail']){
-        $stmt = $pdo->prepare('SELECT user_email FROM `Users` WHERE user_id != ?');
+        $stmt = $pdo->prepare('SELECT user_email FROM Users WHERE user_id != ?');
         $stmt->execute(array($_SESSION['LOGGED_ID']));
         $usersMail = $stmt->fetchAll();
         foreach($usersMail as $mail){
@@ -190,7 +194,7 @@ function modificationValidee(){
     }
 
     if($oldInfo['oldPseudo'] != $newInfo['newPseudo']){
-        $stmt = $pdo -> prepare('SELECT user_pseudo FROM `Users` WHERE user_id != ?');
+        $stmt = $pdo -> prepare('SELECT user_pseudo FROM Users WHERE user_id != ?');
         $stmt->execute(array($_SESSION['LOGGED_ID']));
         $usersPseudo = $stmt -> fetchAll();
         foreach($usersPseudo as $pseudo){
